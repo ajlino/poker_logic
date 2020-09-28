@@ -11,8 +11,8 @@ MARGIN_LEFT = 20
 MARGIN_TOP = 150
 
 # WINDOW SIZE
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 1600
+HEIGHT = 900
 
 # COLORS
 BLACK = (0, 0, 0)
@@ -26,9 +26,7 @@ LIGHT_RED = (120, 0, 0)
 # Initializing PyGame
 pygame.init()
 
-# WINDOW SIZE
-WIDTH = 800
-HEIGHT = 600
+
 
 # Setting up the screen and background
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -234,32 +232,38 @@ card4 = pygame.image.load('PlayingCards/' + hand[3].face + hand[3].suit + '.png'
 card5 = pygame.image.load('PlayingCards/' + hand[4].face + hand[4].suit + '.png')
 
 # scale the images
-card1 = pygame.transform.scale(card1, (100,160))
-card2 = pygame.transform.scale(card2, (100,160))
-card3 = pygame.transform.scale(card3, (100,160))
-card4 = pygame.transform.scale(card4, (100,160))
-card5 = pygame.transform.scale(card5, (100,160))
+scaleFactor = 1.4
+card_width = int(360 / scaleFactor)
+card_height =int(540 / scaleFactor)
+
+card1 = pygame.transform.scale(card1, (card_width,card_height))
+card2 = pygame.transform.scale(card2, (card_width,card_height))
+card3 = pygame.transform.scale(card3, (card_width,card_height))
+card4 = pygame.transform.scale(card4, (card_width,card_height))
+card5 = pygame.transform.scale(card5, (card_width,card_height))
 
 # Create Buttons
+buttonMargin = 20
+buttonSpacing = (buttonMargin + (card_width))
 button1 = large_font.render("Hold", True, WHITE)
 button1_rect = button1.get_rect()
-button1_rect.center = (70, 400)
+button1_rect.center = (buttonSpacing/2, 600)
 
 button2 = large_font.render("Hold", True, WHITE)
 button2_rect = button2.get_rect()
-button2_rect.center = (190, 400)
+button2_rect.center = (buttonSpacing*1.5, 600)
 
 button3 = large_font.render("Hold", True, WHITE)
 button3_rect = button3.get_rect()
-button3_rect.center = (310, 400)
+button3_rect.center = (buttonSpacing*2.5, 600)
 
 button4 = large_font.render("Hold", True, WHITE)
 button4_rect = button4.get_rect()
-button4_rect.center = (430, 400)
+button4_rect.center = (buttonSpacing*3.5, 600)
 
 button5 = large_font.render("Hold", True, WHITE)
 button5_rect = button5.get_rect()
-button5_rect.center = (550, 400)
+button5_rect.center = (buttonSpacing*4.5, 600)
 
 r = rank(hand)
 
@@ -290,14 +294,14 @@ while True:
             pygame.quit()
             quit()
 
-    padding = 120
+
 
     #Setting up cards on screen
     screen.blit(card1, (MARGIN_LEFT, MARGIN_TOP))
-    screen.blit(card2, (MARGIN_LEFT + padding, MARGIN_TOP))
-    screen.blit(card3, (MARGIN_LEFT + (padding*2), MARGIN_TOP))
-    screen.blit(card4, (MARGIN_LEFT + (padding*3), MARGIN_TOP))
-    screen.blit(card5, (MARGIN_LEFT + (padding*4), MARGIN_TOP))
+    screen.blit(card2, ((card_width+50), MARGIN_TOP))
+    screen.blit(card3, (((card_width+40)*2), MARGIN_TOP))
+    screen.blit(card4, (((card_width+40)*3), MARGIN_TOP))
+    screen.blit(card5, (((card_width+40)*4), MARGIN_TOP))
 
     #Setting up buttons on screen
     screen.blit(button1, button1_rect)
