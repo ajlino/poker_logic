@@ -249,10 +249,13 @@ deck = create_deck()
 
 hand = deal_hand(deck)
 
+#debug
+print (hand)
+
 renderHand(hand)
 
 #clear the choices
-choice = ["draw", "draw", "draw", "draw", "draw"]
+choice = [False, False, False, False, False]
 
 
 # Create Buttons
@@ -299,20 +302,46 @@ while True:
         #determine if key was clicked (1-5)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_1:
-                button1 = large_font.render("Hold", True, RED)
-                choice[0] = "hold"
+                choice[0] = not choice[0]
+                if choice[0]:
+                    button1 = large_font.render("Hold", True, RED)
+                else:
+                    button1 = large_font.render("Hold", True, WHITE)
             elif event.key == pygame.K_2:
-                button2 = large_font.render("Hold", True, RED)
-                choice[1] = "hold"
+                choice[1] = not choice[1]
+                if choice[1]:
+                    button2 = large_font.render("Hold", True, RED)
+                else:
+                    button2 = large_font.render("Hold", True, WHITE)
+            elif event.key == pygame.K_3:
+                choice[2] = not choice[2]
+                if choice[2]:
+                    button3 = large_font.render("Hold", True, RED)
+                else:
+                    button3 = large_font.render("Hold", True, WHITE)
+            elif event.key == pygame.K_4:
+                choice[3] = not choice[3]
+                if choice[3]:
+                    button4 = large_font.render("Hold", True, RED)
+                else:
+                    button4 = large_font.render("Hold", True, WHITE)
+            elif event.key == pygame.K_5:
+                choice[4] = not choice[4]
+                if choice[4]:
+                    button5 = large_font.render("Hold", True, RED)
+                else:
+                    button5 = large_font.render("Hold", True, WHITE)
             elif event.key == pygame.K_SPACE:
-                if choice[0] == "hold":
-                    newCard = random.choice(deck)
-                    hand[0] = newCard
-                    deck.remove(newCard)
-                if choice[1] == "hold":
-                    newCard = random.choice(deck)
-                    hand[1] = newCard
-                    deck.remove(newCard)
+                n = 0
+                for x in choice:
+                    if x == False:
+                        newCard =random.choice(deck)
+                        hand[n] = newCard
+                        deck.remove(newCard)
+                        print(n)
+                    n+=1
+
+
                 print (choice)
                 print (hand)
                 renderHand(hand)
@@ -328,6 +357,8 @@ while True:
                 score_text_rect = score_text.get_rect()
                 score_text_rect.center = (WIDTH//2, 85)
                 screen.blit(score_text, score_text_rect)
+            elif event.key == pygame.K_RETURN:
+
 
 
     # Update the display after each game loop
