@@ -4,17 +4,14 @@ import random
 
 from collections import namedtuple
 
-#This is a test for github
+#global variables
+global deck, hand
 
-# Margins
-MARGIN_LEFT = 20
-MARGIN_TOP = 150
+# Initializing PyGame
+pygame.init()
 
-# WINDOW SIZE
-WIDTH = 1600
-HEIGHT = 900
 
-# COLORS
+# COLOR Definitions
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GRAY = (110, 110, 110)
@@ -23,28 +20,31 @@ LIGHT_GREEN = (0, 120, 0)
 RED = (255, 0, 0)
 LIGHT_RED = (120, 0, 0)
 
-# Initializing PyGame
-pygame.init()
-
-
-
-# Setting up the screen and background
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-screen.fill(GRAY)
-
-# Setting up caption
-pygame.display.set_caption("Jacks or Better Poker")
-
-# Loading image for the icon
-icon = pygame.image.load('icon.png')
-
-# Setting the game icon
-pygame.display.set_icon(icon)
-
-# Types of fonts to be used
+# Font Definitions
 small_font = pygame.font.Font(None, 32)
 large_font = pygame.font.Font(None, 50)
 
+
+# Setting up the screen, background
+# WINDOW SIZE
+WIDTH = 1600
+HEIGHT = 900
+
+# Margins
+MARGIN_LEFT = 20
+MARGIN_TOP = 150
+scaleFactor = 1.4
+card_width = int(360 / scaleFactor)
+card_height = int(540 / scaleFactor)
+
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen.fill(GRAY)
+# Setting up caption
+pygame.display.set_caption("Jacks or Better Poker")
+# Loading image for the icon
+icon = pygame.image.load('icon.png')
+# Setting the game icon
+pygame.display.set_icon(icon)
 
 
 
@@ -62,17 +62,56 @@ face = faces.split()
 lowace = lowaces.split()
 
 
-#Create Deck
-deck = []
-# Loop for every type of suit
-for suitX in suit:
+def create_deck():
+    deck = []
+    # Loop for every type of suit
+    for suitX in suit:
 
-    # Loop for every type of card in a suit
-    for card in face:
-        # Adding the card to the deck
-        deck.append(Card(card, suitX))
+        # Loop for every type of card in a suit
+        for card in face:
+            # Adding the card to the deck
+            deck.append(Card(card, suitX))
+
+    return deck
+
+def deal_hand(deck):
+    hand=[]
+    for x in range(1,6):
+        # Choose the card from the deck
+        current_card = random.choice(deck)
+        hand.append((current_card))
+        # Remove the card from the deck
+        deck.remove(current_card)
+    return (hand)
+
+def renderHand(hand):
+    offset = 0
+    MARGIN_LEFT = 30
+    for card in hand:
+        image = pygame.image.load('PlayingCards/' + card.face + card.suit + '.png')
+        image_scaled = pygame.transform.scale(image, (card_width,card_height))
+        screen.blit(image_scaled, (MARGIN_LEFT + offset, MARGIN_TOP))
+        offset += 320
+        MARGIN_LEFT= 0
 
 
+
+
+def draw(choice):
+    if choice[1] == "hold":
+        current_card = random.choice(deck)
+        hand.append((current_card))
+        # Remove the card from the deck
+        deck.remove(current_card)
+
+
+def set_buttons():
+    #Setting up buttons on screen
+    screen.blit(button1, button1_rect)
+    screen.blit(button2, button2_rect)
+    screen.blit(button3, button3_rect)
+    screen.blit(button4, button4_rect)
+    screen.blit(button5, button5_rect)
 
 
 
@@ -204,43 +243,17 @@ def rank(hand):
     return rank
 
 
-# def handy(cards='2♥ 2♦ 2♣ k♣ q♦'):
-#     hand = []
-#     for card in cards.split():
-#         f, s = card[:-1], card[-1]
-#         assert f in face, "Invalid: Don't understand card face %r" % f
-#         assert s in suit, "Invalid: Don't understand card suit %r" % s
-#         hand.append(Card(f, s))
-#     assert len(hand) == 5, "Invalid: Must be 5 cards in a hand, not %i" % len(hand)
-#     assert len(set(hand)) == 5, "Invalid: All cards in the hand must be unique %r" % cards
-#     return hand
-
 #Deal the hand
-hand = []
-for x in range(1,6):
-    # Choose the card from the deck
-    current_card = random.choice(deck)
-    hand.append((current_card))
-    # Remove the card from the deck
-    deck.remove(current_card)
 
-# Load the card images
-card1 = pygame.image.load('PlayingCards/' + hand[0].face + hand[0].suit + '.png')
-card2 = pygame.image.load('PlayingCards/' + hand[1].face + hand[1].suit + '.png')
-card3 = pygame.image.load('PlayingCards/' + hand[2].face + hand[2].suit + '.png')
-card4 = pygame.image.load('PlayingCards/' + hand[3].face + hand[3].suit + '.png')
-card5 = pygame.image.load('PlayingCards/' + hand[4].face + hand[4].suit + '.png')
+deck = create_deck()
 
-# scale the images
-scaleFactor = 1.4
-card_width = int(360 / scaleFactor)
-card_height =int(540 / scaleFactor)
+hand = deal_hand(deck)
 
-card1 = pygame.transform.scale(card1, (card_width,card_height))
-card2 = pygame.transform.scale(card2, (card_width,card_height))
-card3 = pygame.transform.scale(card3, (card_width,card_height))
-card4 = pygame.transform.scale(card4, (card_width,card_height))
-card5 = pygame.transform.scale(card5, (card_width,card_height))
+renderHand(hand)
+
+#clear the choices
+choice = ["draw", "draw", "draw", "draw", "draw"]
+
 
 # Create Buttons
 buttonMargin = 20
@@ -265,58 +278,57 @@ button5 = large_font.render("Hold", True, WHITE)
 button5_rect = button5.get_rect()
 button5_rect.center = (buttonSpacing*4.5, 600)
 
-r = rank(hand)
 
-print("%-18s %-15s %s" % ("HAND", "CATEGORY", "TIE-BREAKER"))
-# for cards in hand:
-#     r = rank(cards)
-print("%-18r %-15s %r" % (hand, r[0], r[1]))
 
 
 # The GAME LOOP
 while True:
 
-    # Debugging code
-    # hand=[]
-    # hand.append(deck[9])
-    # hand.append(deck[22])
-    # hand.append(deck[2])
-    # hand.append(deck[3])
-    # hand.append(deck[4])
-    # print (hand) # Gives [j♥, j♦, 4♥, 5♥, 6♥]
-
-
     # Loop events occuring inside the game window
     for event in pygame.event.get():
+
+
+        # set up buttons
+        set_buttons()
 
         # Qutting event
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
 
+        #determine if key was clicked (1-5)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_1:
+                button1 = large_font.render("Hold", True, RED)
+                choice[0] = "hold"
+            elif event.key == pygame.K_2:
+                button2 = large_font.render("Hold", True, RED)
+                choice[1] = "hold"
+            elif event.key == pygame.K_SPACE:
+                if choice[0] == "hold":
+                    newCard = random.choice(deck)
+                    hand[0] = newCard
+                    deck.remove(newCard)
+                if choice[1] == "hold":
+                    newCard = random.choice(deck)
+                    hand[1] = newCard
+                    deck.remove(newCard)
+                print (choice)
+                print (hand)
+                renderHand(hand)
+                pygame.display.update()
+                r = rank(hand)
+                handRank = r[0]
+                print("%-18s %-15s %s" % ("HAND", "CATEGORY", "TIE-BREAKER"))
+                # for cards in hand:
+                #     r = rank(cards)
+                print("%-18r %-15s %r" % (hand, r[0], r[1]))
+                pygame.draw.rect(screen, WHITE, [270, 40, 255, 90],2)
+                score_text = small_font.render("Hand Rank = " + handRank, True, BLACK)
+                score_text_rect = score_text.get_rect()
+                score_text_rect.center = (WIDTH//2, 85)
+                screen.blit(score_text, score_text_rect)
 
-
-    #Setting up cards on screen
-    screen.blit(card1, (MARGIN_LEFT, MARGIN_TOP))
-    screen.blit(card2, ((card_width+50), MARGIN_TOP))
-    screen.blit(card3, (((card_width+40)*2), MARGIN_TOP))
-    screen.blit(card4, (((card_width+40)*3), MARGIN_TOP))
-    screen.blit(card5, (((card_width+40)*4), MARGIN_TOP))
-
-    #Setting up buttons on screen
-    screen.blit(button1, button1_rect)
-    screen.blit(button2, button2_rect)
-    screen.blit(button3, button3_rect)
-    screen.blit(button4, button4_rect)
-    screen.blit(button5, button5_rect)
-
-    handRank=r[0]
-
-    pygame.draw.rect(screen, WHITE, [270, 40, 255, 90],2)
-    score_text = small_font.render("Hand Rank = " + handRank, True, BLACK)
-    score_text_rect = score_text.get_rect()
-    score_text_rect.center = (WIDTH//2, 85)
-    screen.blit(score_text, score_text_rect)
 
     # Update the display after each game loop
     pygame.display.update()
