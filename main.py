@@ -93,12 +93,13 @@ def shuffle_and_deal():
     for x in range(1,6):
         # Choose the card from the deck
         current_card = random.choice(deck)
-        hand.append((current_card))
+        hand.append(current_card)
         # Remove the card from the deck
         deck.remove(current_card)
 
     #render the cards on screen
         renderHand(hand)
+
     #render the buttons
         choices = [False, False, False, False, False]
         set_buttons(choices)
@@ -106,14 +107,14 @@ def shuffle_and_deal():
     return  deck, hand, choices
 
 def renderHand(hand):
-    offset = 0
-    MARGIN_LEFT = 30
+    offset = 20
+    MARGIN_LEFT = 80
     for card in hand:
         image = pygame.image.load('PlayingCards/' + card.face + card.suit + '.png')
         image_scaled = pygame.transform.scale(image, (card_width,card_height))
-        screen.blit(image_scaled, (MARGIN_LEFT + offset, MARGIN_TOP))
-        offset += 320
-        MARGIN_LEFT= 0
+        screen.blit(image_scaled, (MARGIN_LEFT, MARGIN_TOP))
+        MARGIN_LEFT += card_width + offset
+
 
 def set_buttons(choices):
     pos1 = MARGIN_LEFT + (card_width/2)
